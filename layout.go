@@ -55,3 +55,21 @@ func (layout Layout) ToHex(p Point) FractionalHex {
 		q, r, -q - r,
 	}
 }
+
+func (layout Layout) HexCornerOffset(corner int) Point {
+	size := layout.size
+	angle := 2.0 * math.Pi * (float64(corner) + layout.orientation.startAngle) / 6
+	return Point{size.x * math.Cos(angle), size.y * math.Sin(angle)}
+}
+
+func (layout Layout) PolygonCorners(hex Hex) []Point {
+	corners := make([]Point, 6)
+	center := layout.ToPixel(hex)
+
+	for i := 0; i < 6; i++ {
+		offset := layout.HexCornerOffset(i)
+		corners[i] = Point{center.x + offset.x, center.y + offset.y}
+	}
+
+	return corners
+}
